@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🎟️ Cloud Ticket Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .form-section { max-width: 600px; margin: auto; }
+        .seat-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;
+            max-width: 400px; margin: 20px auto;
+        }
+        .seat {
+            width: 50px; height: 50px; background-color: #e0e0e0;
+            text-align: center; line-height: 50px;
+            border-radius: 6px; cursor: pointer;
+        }
+        .seat.selected { background-color: #007bff; color: white; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <h1 class="text-center mb-4 fw-bold">🎬 Cloud Ticket Booking</h1>
+
+    <form id="bookingForm" class="form-section">
+        <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="movie" class="form-label">Select Movie</label>
+            <select class="form-select" id="movie" required>
+                <option value="">Choose...</option>
+                <option value="Inception">Inception</option>
+                <option value="The Dark Knight">The Dark Knight</option>
+                <option value="Interstellar">Interstellar</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="timing" class="form-label">Select Show Timing</label>
+            <select class="form-select" id="timing" required>
+                <option value="">Choose...</option>
+            </select>
+        </div>
+
+        <div id="seatsSection" class="hidden">
+            <h5 class="text-center">Select Your Seat</h5>
+            <div class="seat-grid" id="seatGrid"></div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Pay & Confirm</button>
+        </div>
+    </form>
+
+    <div id="confirmation" class="text-center mt-5 hidden">
+        <h2>✅ Booking Confirmed!</h2>
+        <p><strong>Name:</strong> <span id="confName"></span></p>
+        <p><strong>Email:</strong> <span id="confEmail"></span></p>
+        <p><strong>Movie:</strong> <span id="confMovie"></span></p>
+        <p><strong>Timing:</strong> <span id="confTiming"></span></p>
+        <p><strong>Seat:</strong> <span id="confSeat"></span></p>
+    </div>
+</div>
+
+<script>
+    const timingOptions = {
+        'Inception': ['10:00 AM', '2:00 PM', '6:00 PM'],
+        'The Dark Knight': ['11:00 AM', '3:00 PM', '7:00 PM'],
+        'Interstellar': ['9:00 AM', '1:00 PM', '5:00 PM']
+    };
+
+    const seatGrid = document.getElementById('seatGrid');
+    const selectedSeat = { value: null };
+
+    const movieSelect = document.getElementById('movie');
+    const timingSelect = document.getElementById('timing');
+    const seatsSection = document.getElementById('seatsSection');
+
+    movieSelect.addEventListener('change', function () {
+        const timings = timingOptions[this.value] || [];
+        timingSelect.innerHTML = '<option value="">Choose...</option>';
+        timings.forEach(time => {
+            const opt = document.createElement('option');
+            opt.value = time;
+            opt.innerText = time;
+            timingSelect.appendChild(opt);
+        });
+    });
+
+    timingSelect.addEventListener('change', () => {
+        seatsSection.classList.remove('hidden');
+        seatGrid.innerHTML = '';
+        const rows = ['A', 'B', 'C', 'D', 'E'];
+        rows.forEach(row => {
+            for (let i = 1; i <= 6; i++) {
+                const seat = document.createElement('div');
+                seat.className = 'seat';
+                seat.innerText = `${row}${i}`;
+                seat.onclick = () => {
+                    document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+                    seat.classList.add('selected');
+                    selectedSeat.value = seat.innerText;
+                };
+                seatGrid.appendChild(seat);
+            }
+        });
+    });
+
+    document.getElementById('bookingForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!selectedSeat.value) {
+            alert("Please select a seat.");
+            return;
+        }
+
+        document.getElementById('confName').innerText = document.getElementById('name').value;
+        document.getElementById('confEmail').innerText = document.getElementById('email').value;
+        document.getElementById('confMovie').innerText = document.getElementById('movie').value;
+        document.getElementById('confTiming').innerText = document.getElementById('timing').value;
+        document.getElementById('confSeat').innerText = selectedSeat.value;
+
+        document.getElementById('bookingForm').classList.add('hidden');
+        document.getElementById('confirmation').classList.remove('hidden');
+    });
+</script>
+</body>
+</html>

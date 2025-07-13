@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Your Seats</title>
+</head>
+<body>
+    <h1>Hi {{ name }}, select your seats for {{ movie }} ({{ showtime }})</h1>
+
+    <form action="/confirm_booking" method="post">
+        <input type="hidden" name="name" value="{{ name }}">
+        <input type="hidden" name="movie" value="{{ movie }}">
+        <input type="hidden" name="showtime" value="{{ showtime }}">
+
+        <label for="seat">Choose a seat:</label><br>
+        <select name="seat" required>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="A3">A3</option>
+        </select><br><br>
+
+        <button type="submit">Confirm Booking</button>
+    </form>
+</body>
+</html>

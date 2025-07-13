@@ -1,0 +1,4 @@
+flask
+flask_sqlalchemy
+flask_mail
+Flask==2.3.3
